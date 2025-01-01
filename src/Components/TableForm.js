@@ -9,8 +9,10 @@ function TableForm({ newTable, setNewTable, handleSubmit }) {
         <input
           type="number"
           name="num-guests"
-          value={newTable}
-          onChange={e => setNewTable(e.target.value)}
+          value={newTable} // Controlled input
+          required
+          placeholder="Number of seats"
+          onChange={(e) => setNewTable(e.target.value)} // Updates state on change
         />
         <br />
         <button className="add-table">ADD Table</button>
