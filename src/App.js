@@ -6,36 +6,65 @@ import TableForm from './Components/TableForm';
 import TableCard from './Components/TableCard';
 import AlertComponent from './Components/AlertComponent';
 import { Row, Col, Container } from 'react-bootstrap';
+import { doc, setDoc } from "firebase/firestore"; 
+import {db} from './config'
+import { collection, getDocs } from "firebase/firestore";
+import { deleteDoc } from "firebase/firestore";
+
 
 function App() {
+  //newTable is an integer that includes the num of guests.
   const [newTable, setNewTable] = useState()
   const[tables,setTables] = useState([])
   const [show, setShow] = useState(false);
+
+
   function handleSubmit(e){
     e.preventDefault()
+    var idCreated = crypto.randomUUID()
+    var chairsAtTable = newTable
     setTables(currentTables =>{
       return [
         ...currentTables,
-        {id: crypto.randomUUID(), numGuests: newTable, occupied: false},
+        {id: idCreated, numGuests: chairsAtTable, occupied: false},
       ]
+    })
+    //saving content in firebase
+    const tableRef = doc(db, 'Tables', idCreated);
+    setDoc(tableRef, { id: idCreated , numGuests: chairsAtTable })
+    .then(() => {
+      console.log('Successfully put in firebase');
+    })
+    .catch(err => {
+      console.error('Error', err);
     })
   }
 
-  function handleDelete(id){
+  async function handleDelete(id){
+    const tableRef = doc(db, "Tables", id);
+    try{
+      await deleteDoc(tableRef);
+    }catch(err){
+      console.error("Error deleting", err);
+    }
+    
     setTables(currentTable => {
       return currentTable.filter(tables => tables.id !== id)
     }) 
   }
 
   function incrementGuests(id){
+    
     setTables(currentTables => {
       return currentTables.map(table => {
         if(table.id === id){
+          const tableRef = doc(db, 'Tables', id);
+          setDoc(tableRef, { id: id , numGuests: table.numGuests + 1 })
           return {...table,  numGuests: parseInt(table.numGuests) + 1};
         }
         return table;
       })
-      
+    
     })
   }
 
@@ -43,6 +72,8 @@ function App() {
     setTables(currentTables => {
       return currentTables.map(table => {
         if(table.id === id) {
+          const tableRef = doc(db, 'Tables', id);
+          setDoc(tableRef, { id: id , numGuests: table.numGuests - 1 })
           return {...table, numGuests:parseInt(table.numGuests) - 1};
         }
         return table;
