@@ -1,6 +1,6 @@
 
 import './App.css';
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TableForm from './Components/TableForm';
 import TableCard from './Components/TableCard';
@@ -26,6 +26,9 @@ function Home(){
         e.preventDefault()
         var idCreated = crypto.randomUUID()
         var chairsAtTable = newTable
+        //Adds cookie to the session
+        sessionStorage.setItem(idCreated,chairsAtTable)
+        
         setTables(currentTables =>{
         return [
             ...currentTables,

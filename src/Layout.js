@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { doc, getDocs,collection} from "firebase/firestore"; 
 import {db} from './config';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 import { Row, Col, Container, Navbar } from 'react-bootstrap';
 
 function Layout  () {
@@ -27,7 +26,7 @@ function Layout  () {
         fetchData();
     }, []);
     
-    
+
     return (
         <div>
             <h1>Features Page</h1><p>Here are the features of our restaurant...</p>
